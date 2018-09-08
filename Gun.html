@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <!-- Boilerplate HTML -->
+    <meta charset="utf-8">
+    <title>Hyde Gun</title>
+    <!-- Mi css -->
+    <link href="./css/HydeSheet.css" rel="stylesheet" />
+    <!-- jQuery -->
+    <script src="./jquery-3.3.1.js"></script>
+    <!-- Mis scripts -->
+    <script src="./js/HydeScript.js"></script>
+    <!-- Loads the GUN library -->
+    <script src="./node_modules/gun/gun.js"></script>
+    <script src="./node_modules/gun/sea.js"></script>
+
+</head>
+<body>
+
+    <div id="chat">
+        <!-- Placeholder for chat messages -->
+    </div>
+
+    <input type="text" id="input_message" value="" placeholder="Write something!" />
+
+    <div id="login_input">
+        <div id="login_form" class="visible">
+            <table>
+                <tr>
+                    <td><input type="text" id="username" value="" placeholder="Username" /></td>
+                </tr>
+                <tr>
+                    <td><input type="password" id="password" value="" placeholder="Password" /></td>
+                </tr>
+                <tr>
+                    <td>
+                        <button id="login" type="button">Log in</button>
+                        <button id="register" type="button">Register</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="logout" class="visible"></div>
+    </div>
+
+    <!-- Start GUN -->
+    <script>
+        var peers = [
+            //'http://gungame.herokuapp.com/gun',
+            'http://localhost:8080/gun',
+        ];
+        var gun = Gun(peers);
+        var user_gun = gun.user();
+
+        var mensajes = gun.get('chat');
+
+    </script>
+</body>
+
+</html>

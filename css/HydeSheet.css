@@ -1,0 +1,42 @@
+﻿body {
+
+}
+
+button{
+    color: white;
+    border-color: black;
+    background-color: grey;
+}
+
+.visible{
+    visibility:visible;
+}
+
+.oculto{
+    visibility:hidden;
+}
+
+#login_input {
+    background-color: yellow;
+    border: outset;
+    margin:inherit;
+    position:absolute;
+    text-align:center;
+}
+
+#chat{
+    text-align:center;
+    background-color:azure;
+    border-color:black;
+}
+
+#input_message{
+    width: 100%;
+    background-color:honeydew;
+}
+
+#logout {
+    line-height:1px;
+}
+
+
