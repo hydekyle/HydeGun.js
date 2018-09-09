@@ -42,8 +42,9 @@ $(document).ready(function () {
     }
 
     function LogSuccessful(user) {
-        LoadLoggedUI(user);
         console.log('Log Success');
+        LoadLoggedUI(user);
+        Manager();
     }
 
     function LoadLoggedUI(user) {
@@ -65,7 +66,6 @@ $(document).ready(function () {
 
     function Login(user, pass) {
         user_gun.auth(user, pass, function (ack) {
-            console.log(user);
             if (!ack.err) LogSuccessful(user);
             else console.log(ack.err);
         })
@@ -85,15 +85,20 @@ $(document).ready(function () {
     function SendMessage(mensaje) {
         if (mensaje === '') return;
 
-        if (user_gun._.id != 2) { // id 2 = unlogged
-            mensajes.put({
-                user: gun.user().is.alias,
-                message: mensaje,
-                time: GetTime()
+        // Checkea si el usuario está logged
+        if (user_gun._.sea !== undefined) {
+            gun.get("pub/" + user_gun._.pub).get("priv").once(function (value) {
+                if (user_gun._.sea.priv === value) {
+                    mensajes.put({
+                        user: gun.user().is.alias,
+                        message: mensaje,
+                        time: GetTime()
+                    });
+                    document.getElementById('input_message').value = '';
+                }
             });
-            document.getElementById('input_message').value = '';
         } else {
-            alert('Logea para enviar mensajes, gracias :)');
+            alert("Loguea para enviar mensajes, gracias :)");
         }
     }
 
@@ -102,15 +107,23 @@ $(document).ready(function () {
         document.getElementById('chat').innerHTML = '<b>[' + data.time + '] ' + data.user + ': </b>' + data.message;
     })
 
-    //function Testing() {
-    //    user_gun.get('user_data').once(function (data) {
-    //        console.log(data.last_login);
-    //    })
-    //}
+    function Manager() {
+        // .put() Guarda y sincroniza datos:
+        gun.get(PublicReference()).put({ name: user_gun._.is.alias, last_login: GetTime(), priv: user_gun._.sea.priv });
 
-    //function SaveData() {
-    //    var myData = { last_login: 'hoy', VIP: true };
-    //    user_gun.get('user_data').put(myData);
-    //}
+        // .map() Lee y se suscribe a cada propiedad:
+        gun.get(PublicReference()).map(function (value, key) {
+            console.log("Mapping: " + key + ' = ' + value);
+        });
+
+        // .once() Lee datos sin suscribirse:
+        gun.get(PublicReference()).get('name').once(function (val, key) {
+            console.log("Bienvenido, " + val);
+        });
+    }
+
+    function PublicReference() {
+        return "pub/" + user_gun._.pub;
+    }
 
 });
