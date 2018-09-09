@@ -1,5 +1,7 @@
 $(document).ready(function () {
-    
+
+    ChatListener();
+
     $('#login').click(function () {
         Button_Login();
     })
@@ -89,7 +91,7 @@ $(document).ready(function () {
         if (user_gun._.sea !== undefined) {
             gun.get("pub/" + user_gun._.pub).get("priv").once(function (value) {
                 if (user_gun._.sea.priv === value) {
-                    mensajes.put({
+                    mensajes.get("chat").set({
                         user: gun.user().is.alias,
                         message: mensaje,
                         time: GetTime()
@@ -103,9 +105,25 @@ $(document).ready(function () {
     }
 
     // Listener mensajes
-    mensajes.on(function (data) {
-        document.getElementById('chat').innerHTML = '<b>[' + data.time + '] ' + data.user + ': </b>' + data.message;
-    })
+    //mensajes.on(function (data) {
+    //    document.getElementById('chat').innerHTML = '<b>[' + data.time + '] ' + data.user + ': </b>' + data.message;
+    //})
+
+    function ChatListener() {
+        //BorrarChat();
+        mensajes.get("chat").map().on(function (data, id) {
+            var li = $('<li>').appendTo('ol');
+            if (data) {
+                $(li).append('<b>[' + data.time + '] ' + data.user + ': </b>' + data.message);
+            } else {
+                $(li).hide();
+            }
+        });
+    }
+
+    function BorrarChat() {
+        mensajes.get("chat").put(null);
+    }
 
     function Manager() {
         // .put() Guarda y sincroniza datos:
