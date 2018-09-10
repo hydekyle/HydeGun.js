@@ -14,12 +14,13 @@
     <!-- Loads the GUN library -->
     <script src="./node_modules/gun/gun.js"></script>
     <script src="./node_modules/gun/sea.js"></script>
+    <script src="./node_modules/gun/lib/time.js"></script>
 
 </head>
 <body>
 
     <div id="chat">
-        <ol></ol>
+        
     </div>
 
     <input type="text" id="input_message" value="" placeholder="Write something!" />
@@ -53,7 +54,7 @@
         var gun = Gun(peers);
         var user_gun = gun.user();
 
-        var mensajes = gun.get('chat');
+        var mensajes = gun.get('chat1').get('mensajes');
 
     </script>
 </body>

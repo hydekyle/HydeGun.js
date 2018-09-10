@@ -1,5 +1,6 @@
 $(document).ready(function () {
 
+    const onload_messages_max = 5;
     ChatListener();
 
     $('#login').click(function () {
@@ -46,7 +47,7 @@ $(document).ready(function () {
     function LogSuccessful(user) {
         console.log('Log Success');
         LoadLoggedUI(user);
-        Manager();
+        //Manager();
     }
 
     function LoadLoggedUI(user) {
@@ -91,11 +92,18 @@ $(document).ready(function () {
         if (user_gun._.sea !== undefined) {
             gun.get("pub/" + user_gun._.pub).get("priv").once(function (value) {
                 if (user_gun._.sea.priv === value) {
-                    mensajes.get("chat").set({
+
+                    mensajes.time({
                         user: gun.user().is.alias,
-                        message: mensaje,
+                        message: mensaje.toString(),
                         time: GetTime()
                     });
+
+                    //mensajes.set({
+                    //    user: gun.user().is.alias,
+                    //    message: mensaje.toString(),
+                    //    time: GetTime()
+                    //});
                     document.getElementById('input_message').value = '';
                 }
             });
@@ -103,26 +111,50 @@ $(document).ready(function () {
             alert("Loguea para enviar mensajes, gracias :)");
         }
     }
-
-    // Listener mensajes
-    //mensajes.on(function (data) {
-    //    document.getElementById('chat').innerHTML = '<b>[' + data.time + '] ' + data.user + ': </b>' + data.message;
-    //})
+    var n = 1;
+    function DisplayMessage(d) {
+        var chatDisplayer = $('#chat');
+        if (d) {
+            if (n <= onload_messages_max) {
+                $(chatDisplayer).prepend('<p><b>[' + d.time + '] ' + d.user + ': </b>' + d.message + '</p>');
+                n++;
+            } else {
+                $(chatDisplayer).append('<p><b>[' + d.time + '] ' + d.user + ': </b>' + d.message + '</p>');
+            }
+        } else {
+            $(chatDisplayer).hide();
+        }
+    }
 
     function ChatListener() {
         //BorrarChat();
-        mensajes.get("chat").map().on(function (data, id) {
-            var li = $('<li>').appendTo('ol');
-            if (data) {
-                $(li).append('<b>[' + data.time + '] ' + data.user + ': </b>' + data.message);
-            } else {
-                $(li).hide();
-            }
-        });
+
+        mensajes.time((data, key, time) => {
+            gun.get(data['#']).once((d, id) => {
+                DisplayMessage(d);
+            });
+        }, onload_messages_max); //Lee solo los últimos n mensajes
+
+
+        //mensajes.get("chat").map().on(function (data, id) {
+        //    console.log(data._['#']);
+        //    gun.get(id).once(function (data, id) {
+        //        console.log(data);
+        //    });
+        //    //console.log(dataJSON.includes(id));
+        //    if (typeof data.message === 'string') {
+        //        var li = $('<li>').appendTo('ol');
+        //        if (data) {
+        //            $(li).append('<b>[' + id + '] ' + data.user + ': </b>' + data.message);
+        //        } else {
+        //            $(li).hide();
+        //        }
+        //    }
+        //});
     }
 
     function BorrarChat() {
-        mensajes.get("chat").put(null);
+        mensajes.put(null);
     }
 
     function Manager() {
